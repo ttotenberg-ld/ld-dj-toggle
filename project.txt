@@ -1,0 +1,9 @@
+$: n("<0 2 0 4 9 7>*[16,4]").scale("<g:minor eb:major bb:major d:major>")._punchcard()
+$: n("<0@2 4@2>*8").scale("<g:minor eb:major bb:major d:major>").trans(-12)._punchcard()
+
+$: s("bd!4, [- sd - sd], [hh*8]")
+  .bank("RolandTR909")
+  .delay(.2)
+  .room(.3)
+  ._scope()
+
