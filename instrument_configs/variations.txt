@@ -1,0 +1,100 @@
+/*
+  VARIATIONS FOR BASS AND DRUMS
+  Copy and paste these into current_config.txt to replace the existing 'bass' or 'drums' variables.
+  Note: Ensure you comment out the original definitions to avoid conflicts.
+*/
+
+// ==========================================
+// BASS VARIATIONS
+// ==========================================
+
+// OPTION 1: Funky / Syncopated
+// More rests, octave jumps, and staccato feel
+// Good for: Section 2 ("i went my own way...")
+/*
+let bass = arrange(
+  [2, "<[e2 -] [- e3 e2 -] [- f1] [e2 - .]>*4"],
+  [1, "<[- e2] [e2 - . f2] [- f1] [- e3]>*4"],
+  [1, "<[g2 .] [g2 - g2 a2] [- g3] [-]>*4"],
+)
+  .note().sound("gm_synth_bass_1:0")
+  .attack(0).decay(.3).release(.2) // Sharper decay for funkier feel
+  .lpf(2500);
+*/
+
+// OPTION 2: Rolling / Driving
+// Constant 16th note feel, driving the track forward
+// Good for: Section 5 ("bumpin' that")
+/*
+let bass = arrange(
+  [2, "<[e2 e2 e2 e2] [e2 e2 e2 f2] [f1 f1 f1 f1] [f1 f1 f1 f1]>*4"],
+  [1, "<[e2 e2 e2 e2] [e2 e2 e2 f2] [f1 f1 f1 f1] [e2 e2 e2 e2]>*4"],
+  [1, "<[g2 g2 g2 g2] [g2 g2 g2 a2] [a2 a2 a2 a2] [a2 a2 a2 a2]>*4"],
+)
+  .note().sound("gm_synth_bass_1:0")
+  .attack(0).decay(.4).release(.4)
+  .lpf(1500).lpenv(2); // More filter movement
+*/
+
+// OPTION 3: Deep / Sub-focused
+// Sparse, sustained notes to fill the low end
+/*
+let bass = arrange(
+  [2, "<[e1 ~ ~ ~] [~ ~ ~ f1] [f1 ~ ~ ~] [~ ~ ~ ~]>*2"],
+  [1, "<[e1 ~ ~ ~] [~ ~ ~ f1] [f1 ~ ~ ~] [~ ~ ~ ~]>*2"],
+  [1, "<[g1 ~ ~ ~] [~ ~ ~ a1] [a1 ~ ~ ~] [~ ~ ~ ~]>*2"],
+)
+  .note().sound("gm_synth_bass_1:0")
+  .attack(0.01).decay(1).sustain(1).release(1)
+  .lpf(800);
+*/
+
+
+// ==========================================
+// DRUM VARIATIONS
+// ==========================================
+
+// OPTION 1: Breakbeat Style
+// Syncopated kick and snare placement
+/*
+let bass_drum = arrange(
+  [4, "<[bd - ~ bd] [~ bd - -] [- ~ bd -] [bd - - ~]>*4"]
+).sound().bank("RolandTR909").gain(1.4);
+
+let clap = arrange(
+  [4, "<[~] [cp] [~ cp] [cp]>*4"]
+).sound().bank("RolandTR909").gain(1.1);
+
+let drums = stack(bass_drum, clap);
+*/
+
+// OPTION 2: Minimal / Glitchy
+// Sparse kick, using rimshots or other percussion for texture
+/*
+let bass_drum = arrange(
+  [4, "<[bd -] [- -] [- -] [- -]>*4"]
+).sound().bank("RolandTR909").gain(1.4);
+
+let clap = arrange(
+  [4, "<[-] [cp] [-] [cp]>*4"]
+).sound().bank("RolandTR909").gain(1.1);
+
+let perc = arrange(
+  [4, "<[~ ~ rim ~] [~ ~ ~ ~] [~ rim ~ ~] [~ ~ ~ rim]>*8"]
+).sound().bank("RolandTR909").gain(0.8);
+
+let drums = stack(bass_drum, clap, perc);
+*/
+
+// OPTION 3: Hard Driving (Techno)
+// Four-on-the-floor with aggressive hats included in the drum stack
+/*
+let bass_drum = s("bd*4").bank("RolandTR909").gain(1.5).clip(1.2);
+
+let clap = s("~ cp").bank("RolandTR909").gain(1.1);
+
+let hats_closed = s("hh*8").bank("RolandTR909").gain(0.7);
+let hats_open = s("~ oh ~ oh").bank("RolandTR909").gain(0.8);
+
+let drums = stack(bass_drum, clap, hats_closed, hats_open);
+*/

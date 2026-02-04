@@ -459,7 +459,107 @@ Create boolean flags in LaunchDarkly:
 
 ---
 
-## 10. Complete Example: Full Loop with Flags
+## 10. Lead Arrangement Selection
+
+### Goal
+Dynamically switch between completely different lead synth arrangements (including note patterns, sounds, and effects) using a single LaunchDarkly flag as a selector.
+
+### Flag: `leadArrangement`
+**Type:** String (variation selector)
+
+**Example Values:**
+- `techno` - Aggressive supersaw arpeggios with scale-based patterns
+- `epiano` - Warm jazz chords with GM electric piano sound
+- `organ` - Wide octave spreads with cathedral pipe organ sound
+- `original` - Syncopated sawtooth with full ADSR and filter envelope effects
+- `piano` - Gentle Steinway piano intro
+
+### Usage
+
+First, define your lead variations as a map of pattern factories:
+
+```javascript
+const leadVariations = {
+  // Techno - aggressive supersaw arpeggios
+  techno: () => arrange(
+    [3, "<0 4 0 9 7>*16".scale("[e:minor f:major]")],
+    [1, "<0 4 0 9 7>*16".scale("[g:major a:minor]")]
+  ).note().sound("supersaw"),
+
+  // Electric Piano - warm jazz chords
+  epiano: () => arrange(
+    [3, "<[[e3,b3,g3,e4] [- - [e3,b3,g3,e4] - - ]] [ - [f3,c4,a3,f4]]>*2"],
+    [1, "<[g3,d4,b3,g4] [a3,e4,c4,a4]>*2"]
+  ).note().sound("gm_epiano1").gain(1.5).release(.4),
+
+  // Organ - cathedral pipe organ
+  organ: () => arrange(
+    [3, "<[e1,e2,e3,b3,g3,e4] [f1,f2,f3,c4,a2,f4]>*2"],
+    [1, "<[g1,g2,g3,d4,b3,g5] [a1,a2,a3,e4,c4,a4]>*2"]
+  ).note().sound("pipeorgan_loud").gain(2).release(.4),
+
+  // Original - syncopated sawtooth with effects
+  original: () => arrange(
+    [3, "<[[e3,b3] - c4 -] [e3 - f3 c4] [- c4 a4 -] [- - - -]>*4"],
+    [1, "<[- - [g3,b3] -] [g3 - a3 c4] [- c4 c5 -] [c4 - g4 -]>*4"]
+  ).note().sound("sawtooth")
+    .attack(0).decay(.25).sustain(0).release(.3)
+    .lpf(300).lpq(0).lpenv(3).lpa(0).lpd(.15).lps(0)
+    .delay(.2).delaytime(.25).delayfeedback(.1)
+};
+
+// Use the flag to dynamically select the lead arrangement
+// Falls back to 'original' if the flag is not set or invalid
+let lead_synth = getLeadArrangement('leadArrangement', 'original', leadVariations);
+```
+
+### Function Signature
+
+```javascript
+getLeadArrangement(flagKey, defaultVariation, variations)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `flagKey` | string | The LaunchDarkly flag key containing the variation name |
+| `defaultVariation` | string | Fallback variation name if flag is not set or invalid |
+| `variations` | object | Map of variation names to pattern factory functions |
+
+### How It Works
+
+The `getLeadArrangement()` function:
+1. Reads the variation name from the specified LaunchDarkly flag
+2. Looks up the corresponding pattern factory in the variations map
+3. Falls back to the default variation if the flag value doesn't match any key
+4. Calls the factory function to create the pattern
+5. Caches the pattern until the flag value changes (for efficiency)
+6. Returns a Pattern that can be used like any other Strudel pattern
+
+### Benefits Over `.leadSound()`
+
+While `.leadSound()` only controls sound source and effects, `getLeadArrangement()` allows switching:
+- **Note patterns** - completely different melodies/chord voicings
+- **Timing divisions** - different `arrange()` structures
+- **Sound source** - different synths/samples
+- **Effect chains** - unique effects per variation
+
+### LaunchDarkly Flag Setup
+
+Create a string flag in LaunchDarkly:
+- **Flag key:** `leadArrangement`
+- **Flag type:** String (multivariate)
+- **Variations:**
+  - `techno` - "Techno Supersaw"
+  - `epiano` - "Electric Piano"
+  - `organ` - "Pipe Organ"
+  - `original` - "Original Sawtooth"
+  - `piano` - "Piano"
+- **Default on variation:** Your preferred starting variation
+- **Default off variation:** `original` (safe fallback)
+
+---
+
+## 11. Complete Example: Full Loop with Flags
 
 Here's how your loop looks using all the LaunchDarkly features:
 
@@ -502,7 +602,7 @@ $: s("bd!4, [- sd - sd], [hh*8]")
 
 ---
 
-## 11. LaunchDarkly Flag Setup
+## 12. LaunchDarkly Flag Setup
 
 ### Recommended Flags to Create
 
@@ -548,7 +648,7 @@ $: s("bd!4, [- sd - sd], [hh*8]")
 
 ---
 
-## 12. Available Strudel Parameters
+## 13. Available Strudel Parameters
 
 These are common parameters you can control with `flag()`:
 
@@ -578,7 +678,7 @@ These are common parameters you can control with `flag()`:
 
 ---
 
-## 13. Custom Methods Summary
+## 14. Custom Methods Summary
 
 These are the custom methods and functions added by the LaunchDarkly integration:
 
@@ -587,6 +687,7 @@ These are the custom methods and functions added by the LaunchDarkly integration
 | Function | Purpose | Flag Type |
 |----------|---------|-----------|
 | `setcpmFlag(flagKey, default, divisor)` | Reactive global tempo control | Number (BPM with divisor) |
+| `getLeadArrangement(flagKey, default, variations)` | Switch between pre-defined lead arrangements | String (variation selector) |
 
 ### Pattern Methods
 
@@ -600,7 +701,7 @@ These are the custom methods and functions added by the LaunchDarkly integration
 
 ---
 
-## 14. Benefits of This Integration
+## 15. Benefits of This Integration
 
 1. **Reactive updates** - Changes in LaunchDarkly apply immediately without restarting
 2. **Composable** - `flag()` works anywhere a pattern is accepted
@@ -610,7 +711,7 @@ These are the custom methods and functions added by the LaunchDarkly integration
 
 ---
 
-## 15. Potential Additional Integrations
+## 16. Potential Additional Integrations
 
 The following Strudel features are **not yet integrated** with LaunchDarkly but represent opportunities for future development:
 

@@ -36,7 +36,7 @@ import { getRandomTune, initCode, loadModules, shareCode } from './util.mjs';
 import './Repl.css';
 import { setInterval, clearInterval } from 'worker-timers';
 import { getMetadata } from '../metadata_parser';
-import { initLaunchDarkly, flag, setcpmFlag } from './launchdarkly.mjs';
+import { initLaunchDarkly, flag, setcpmFlag, getLeadArrangement } from './launchdarkly.mjs';
 
 const { latestCode, maxPolyphony, audioDeviceName, multiChannelOrbits } = settingsMap.get();
 let modulesLoading, presets, drawContext, clearCanvas, audioReady;
@@ -94,6 +94,7 @@ export function useReplContext() {
         }
         globalThis.flag = flag;
         globalThis.setcpmFlag = setcpmFlag;
+        globalThis.getLeadArrangement = getLeadArrangement;
         if (prebakeScript?.length) {
           return evaluate(prebakeScript ?? '');
         }

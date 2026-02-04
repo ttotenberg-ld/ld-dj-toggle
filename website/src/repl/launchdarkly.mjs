@@ -361,3 +361,57 @@ export const setcpmFlag = (flagKey, defaultValue = 100, divisor = 1) => {
   // Return silence like setcpm does
   return pure(0).withValue(() => ({}));
 };
+
+/**
+ * Returns a lead arrangement pattern based on a LaunchDarkly flag value.
+ * The flag should contain a string key matching a registered variation name.
+ * This enables dynamic switching between pre-defined lead synth arrangements.
+ * 
+ * @name getLeadArrangement
+ * @param {string} flagKey - The LaunchDarkly flag key containing the variation name
+ * @param {string} defaultVariation - Fallback variation name if flag is not set or invalid
+ * @param {Object} variations - Map of variation names to pattern factories (functions returning patterns)
+ * @returns {Pattern} The selected lead arrangement pattern
+ * @example
+ * // Define lead variations as a map of pattern factories
+ * const leadVariations = {
+ *   techno: () => arrange(
+ *     [3, "<0 4 0 9 7>*16".scale("[e:minor f:major]")],
+ *     [1, "<0 4 0 9 7>*16".scale("[g:major a:minor]")]
+ *   ).note().sound("supersaw"),
+ *   
+ *   original: () => arrange(
+ *     [3, "<[[e3,b3] - c4 -] [e3 - f3 c4] [- c4 a4 -] [- - - -]>*4"],
+ *     [1, "<[- - [g3,b3] -] [g3 - a3 c4] [- c4 c5 -] [c4 - g4 -]>*4"]
+ *   ).note().sound("sawtooth")
+ * };
+ * 
+ * // Use flag to dynamically select the lead arrangement
+ * let lead_synth = getLeadArrangement('leadArrangement', 'original', leadVariations);
+ */
+export const getLeadArrangement = (flagKey, defaultVariation, variations) => {
+  // Cache to avoid recreating patterns on every query
+  let cachedVariationKey = null;
+  let cachedPattern = null;
+  
+  return new Pattern((state) => {
+    const variationKey = flags[flagKey] ?? defaultVariation;
+    
+    // Get the pattern factory for the requested variation, fallback to default
+    const patternFactory = variations[variationKey] ?? variations[defaultVariation];
+    
+    if (!patternFactory) {
+      console.warn(`[LaunchDarkly] No variation found for '${variationKey}' or default '${defaultVariation}'`);
+      return [];
+    }
+    
+    // Only recreate the pattern if the variation changed
+    if (variationKey !== cachedVariationKey) {
+      cachedVariationKey = variationKey;
+      // Call the factory function to get the pattern
+      cachedPattern = typeof patternFactory === 'function' ? patternFactory() : patternFactory;
+    }
+    
+    return cachedPattern.query(state);
+  });
+};
