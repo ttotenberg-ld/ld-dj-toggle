@@ -6,18 +6,21 @@ import { mini } from '@strudel/mini';
 let ldClient;
 const flags = {};
 
-export const initLaunchDarkly = async (clientId) => {
+// Default user context - custom attributes must be in the 'custom' object for targeting
+const defaultUserContext = {
+  key: 'strudel-user-' + Math.floor(Math.random() * 10000),
+  anonymous: true,
+  custom: {
+    role: 'controller',
+  },
+};
+
+export const initLaunchDarkly = async (clientId, userContext = defaultUserContext) => {
   if (ldClient) {
     return;
   }
 
-  const user = {
-    key: 'strudel-user-' + Math.floor(Math.random() * 10000),
-    role: 'controller',
-    anonymous: true,
-  };
-
-  ldClient = LDClient.initialize(clientId, user);
+  ldClient = LDClient.initialize(clientId, userContext);
 
   return new Promise((resolve, reject) => {
     ldClient.on('ready', () => {

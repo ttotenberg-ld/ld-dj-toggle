@@ -37,6 +37,9 @@ const leadVariations = {
     .attack(0).decay(.25).sustain(0).release(.3)
     .lpf(300).lpq(0).lpenv(3).lpa(0).lpd(.15).lps(0)
     .delay(.2).delaytime(.25).delayfeedback(.1),
+
+  // LEAD 5: SILENCE - no sound
+  silence: () => arrange()
 };
 
 // LEAD - dynamically selected via LaunchDarkly 'leadArrangement' flag
@@ -80,7 +83,10 @@ const bassVariations = {
     [3, "<[e2,e3] [f2,f3]>*2"],
     [1, "<[g2,g3] [a2,a3]>*2"],
   )
-    .note().sound("gm_synth_strings_2").attack(.05).sustain(.9).release(.1).trans("<0 0 0 <0 [-6m -9]>>")
+    .note().sound("gm_synth_strings_2").attack(.05).sustain(.9).release(.1).trans("<0 0 0 <0 [-6m -9]>>"),
+
+  // BASS 5: SILENCE - no sound
+  silence: () => arrange()
 };
 
 // BASS - dynamically selected via LaunchDarkly 'bassArrangement' flag
@@ -129,7 +135,9 @@ const drumVariations = {
     s("bd - bd -").bank("casiosk1"),
     s("bd hh bd hh").bank("casiovl1"),
     s("< - hh - hh - hh - hh >*8").bank("casiorz1")
-  )
+  ),
+
+  basicTick: () => s("hh - hh -").bank("jd990")
 };
 
 // DRUMS - dynamically selected via LaunchDarkly 'drumArrangement' flag
