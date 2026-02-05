@@ -225,7 +225,7 @@ $: note("c4 e4 g4 b4")
 |------------|----------|------------------------|--------|
 | Lead | `leadArrangement` | `leadVariations` | ✅ Done |
 | Bass | `bassArrangement` | `bassVariations` | ✅ Done |
-| Drums | `drumArrangement` | `drumVariations` | Pending |
+| Drums | `drumArrangement` | `drumVariations` | ✅ Done |
 | Melody | `melodyArrangement` | `melodyVariations` | Pending |
 
 ---
