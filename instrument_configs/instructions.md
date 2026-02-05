@@ -221,12 +221,12 @@ $: note("c4 e4 g4 b4")
 
 ## Naming Conventions
 
-| Instrument | Flag Key | Variations Map Variable |
-|------------|----------|------------------------|
-| Lead | `leadArrangement` | `leadVariations` |
-| Bass | `bassArrangement` | `bassVariations` |
-| Drums | `drumArrangement` | `drumVariations` |
-| Melody | `melodyArrangement` | `melodyVariations` |
+| Instrument | Flag Key | Variations Map Variable | Status |
+|------------|----------|------------------------|--------|
+| Lead | `leadArrangement` | `leadVariations` | ✅ Done |
+| Bass | `bassArrangement` | `bassVariations` | ✅ Done |
+| Drums | `drumArrangement` | `drumVariations` | Pending |
+| Melody | `melodyArrangement` | `melodyVariations` | Pending |
 
 ---
 

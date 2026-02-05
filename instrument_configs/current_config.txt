@@ -63,38 +63,46 @@ let lead_synth = getLeadArrangement('leadArrangement', 'original', leadVariation
 let section_1 = lead_synth;
 
 
-// BASS 1: Original
-let bass = arrange(
-  [2, "<[e2 -] [- - e2 f2] [- f1] [-]>*4"],
-  [1, "<[- e2] [e2 - e2 f2] [- f1] [-]>*4"],
-  [1, "<[g2 -] [g2 - g2 a2] [-] [-]>*4"],
-)
-  .note().sound("gm_synth_bass_1:0")
-  .attack(0).decay(.5).release(.3)
-  .lpf(2000);
+// ============================================================================
+// BASS VARIATIONS - Controlled via LaunchDarkly 'bassArrangement' flag
+// ============================================================================
+// Define all bass variations as a map of pattern factories
+const bassVariations = {
+  // BASS 1: ORIGINAL - Standard GM synth bass with punchy envelope
+  original: () => arrange(
+    [2, "<[e2 -] [- - e2 f2] [- f1] [-]>*4"],
+    [1, "<[- e2] [e2 - e2 f2] [- f1] [-]>*4"],
+    [1, "<[g2 -] [g2 - g2 a2] [-] [-]>*4"],
+  )
+    .note().sound("gm_synth_bass_1:0")
+    .attack(0).decay(.5).release(.3)
+    .lpf(2000),
 
-// // BASS 2: Trance
-// let bass = arrange(
-//   [3, "<[- e2 e2 e2] [- e2 e2 e2] [- f2 f2 f2] [- f2 f2 f2]>*4"],
-//   [1, "<[- g2 g2 g2] [- g2 g2 g2] [- a2 a2 a2] [- a2 a2 a2]>*4"],
-// )
-//   .note().sound("sawtooth").lpf("1000 2000 3000 4000")
+  // BASS 2: TRANCE - Driving sawtooth with filter sweep
+  trance: () => arrange(
+    [3, "<[- e2 e2 e2] [- e2 e2 e2] [- f2 f2 f2] [- f2 f2 f2]>*4"],
+    [1, "<[- g2 g2 g2] [- g2 g2 g2] [- a2 a2 a2] [- a2 a2 a2]>*4"],
+  )
+    .note().sound("sawtooth").lpf("1000 2000 3000 4000"),
 
+  // BASS 3: TUBA - Deep brass sound with octave jumps
+  tuba: () => arrange(
+    [3, "<[e2 - b2 -] [f2 - c3 -]>*2"],
+    [1, "<[g2 - d3 -] [a2 - e3 -]>*2"],
+  )
+    .note().sound("gm_tuba").gain(2).release(.3),
 
-// // BASS 3: Tuba
-// let bass = arrange(
-//   [3, "<[e2 - b2 -] [f2 - c3 -]>*2"],
-//   [1, "<[g2 - d3 -] [a2 - e3 -]>*2"],
-// )
-//   .note().sound("gm_tuba").gain(2).release(.3)
+  // BASS 4: STRINGS - Lush synth strings pad
+  strings: () => arrange(
+    [3, "<[e2,e3] [f2,f3]>*2"],
+    [1, "<[g2,g3] [a2,a3]>*2"],
+  )
+    .note().sound("gm_synth_strings_2").gain(2).attack(.05).sustain(.9).release(.1)
+};
 
-
-// // BASS 4: Strings
-// let bass = arrange(
-//  [3, "<[e2,e3] [f2,f3]>*2"],
-//  [1, "<[g2,g3] [a2,a3]>*2"],
-// )
-// .note().sound("gm_synth_strings_2").gain(2).attack(.05).sustain(.9).release(.1);
+// BASS - dynamically selected via LaunchDarkly 'bassArrangement' flag
+// Falls back to 'original' if the flag is not set or invalid
+let bass = getLeadArrangement('bassArrangement', 'original', bassVariations);
 
 let sub_bass = bass.transpose(-12);
 

@@ -559,7 +559,92 @@ Create a string flag in LaunchDarkly:
 
 ---
 
-## 11. Complete Example: Full Loop with Flags
+## 11. Bass Arrangement Selection
+
+### Goal
+Dynamically switch between completely different bass arrangements (including note patterns, sounds, and effects) using a single LaunchDarkly flag as a selector.
+
+### Flag: `bassArrangement`
+**Type:** String (variation selector)
+
+**Example Values:**
+- `original` - Standard GM synth bass with punchy envelope
+- `trance` - Driving sawtooth bass with filter sweep
+- `tuba` - Deep tuba brass sound with octave jumps
+- `strings` - Lush synth strings pad in bass register
+
+### Usage
+
+First, define your bass variations as a map of pattern factories:
+
+```javascript
+const bassVariations = {
+  // Original - GM synth bass with punchy envelope
+  original: () => arrange(
+    [2, "<[e2 -] [- - e2 f2] [- f1] [-]>*4"],
+    [1, "<[- e2] [e2 - e2 f2] [- f1] [-]>*4"],
+    [1, "<[g2 -] [g2 - g2 a2] [-] [-]>*4"],
+  )
+    .note().sound("gm_synth_bass_1:0")
+    .attack(0).decay(.5).release(.3)
+    .lpf(2000),
+
+  // Trance - driving sawtooth with filter sweep
+  trance: () => arrange(
+    [3, "<[- e2 e2 e2] [- e2 e2 e2] [- f2 f2 f2] [- f2 f2 f2]>*4"],
+    [1, "<[- g2 g2 g2] [- g2 g2 g2] [- a2 a2 a2] [- a2 a2 a2]>*4"],
+  )
+    .note().sound("sawtooth").lpf("1000 2000 3000 4000"),
+
+  // Tuba - deep brass sound with octave jumps
+  tuba: () => arrange(
+    [3, "<[e2 - b2 -] [f2 - c3 -]>*2"],
+    [1, "<[g2 - d3 -] [a2 - e3 -]>*2"],
+  )
+    .note().sound("gm_tuba").gain(2).release(.3),
+
+  // Strings - lush synth strings pad
+  strings: () => arrange(
+    [3, "<[e2,e3] [f2,f3]>*2"],
+    [1, "<[g2,g3] [a2,a3]>*2"],
+  )
+    .note().sound("gm_synth_strings_2").gain(2).attack(.05).sustain(.9).release(.1)
+};
+
+// Use the flag to dynamically select the bass arrangement
+// Falls back to 'original' if the flag is not set or invalid
+let bass = getLeadArrangement('bassArrangement', 'original', bassVariations);
+```
+
+### Function Reuse
+
+The `getLeadArrangement()` function is generic and works for any instrument. Despite its name, it can be used for bass, drums, pads, or any other arrangement type. See section 10 for the function signature and details.
+
+### Variation Descriptions
+
+| Value | Sound | Character |
+|-------|-------|-----------|
+| `original` | GM Synth Bass 1 | Punchy, defined attack, standard synth bass tone |
+| `trance` | Sawtooth | Driving 16th notes with filter automation, energetic |
+| `tuba` | GM Tuba | Deep brass tone, octave jumps, cinematic feel |
+| `strings` | GM Synth Strings 2 | Lush pad texture, slow attack, sustained notes |
+
+### LaunchDarkly Flag Setup
+
+Create a string flag in LaunchDarkly:
+- **Flag key:** `bassArrangement`
+- **Flag type:** String (multivariate)
+- **Variations:**
+  - `original` - "Original Synth Bass"
+  - `trance` - "Trance Sawtooth"
+  - `tuba` - "Tuba Brass"
+  - `strings` - "Synth Strings"
+- **Default on variation:** Your preferred starting variation
+- **Default off variation:** `original` (safe fallback)
+
+---
+
+## 12. Complete Example: Full Loop with Flags
 
 Here's how your loop looks using all the LaunchDarkly features:
 
@@ -602,7 +687,7 @@ $: s("bd!4, [- sd - sd], [hh*8]")
 
 ---
 
-## 12. LaunchDarkly Flag Setup
+## 13. LaunchDarkly Flag Setup
 
 ### Recommended Flags to Create
 
@@ -618,6 +703,7 @@ $: s("bd!4, [- sd - sd], [hh*8]")
 | `leadEnabled` | Boolean | `true` | Enable/disable lead synth |
 | `bassTranspose` | Number | `-12` | Bass octave shift |
 | `bassSoundSettings` | JSON | `{"sound": "gm_synth_bass_2", "lpf": 1800}` | Bass sound configuration |
+| `bassArrangement` | String | `"original"` | Bass arrangement selector (original/trance/tuba/strings) |
 | `bassEnabled` | Boolean | `true` | Enable/disable bass |
 | `drumKitSettings` | JSON | `{"bank": "RolandTR808"}` | Drum kit configuration |
 | `drumDelay` | Number | `0.2` | Drum delay amount |
@@ -648,7 +734,7 @@ $: s("bd!4, [- sd - sd], [hh*8]")
 
 ---
 
-## 13. Available Strudel Parameters
+## 14. Available Strudel Parameters
 
 These are common parameters you can control with `flag()`:
 
@@ -678,7 +764,7 @@ These are common parameters you can control with `flag()`:
 
 ---
 
-## 14. Custom Methods Summary
+## 15. Custom Methods Summary
 
 These are the custom methods and functions added by the LaunchDarkly integration:
 
@@ -701,7 +787,7 @@ These are the custom methods and functions added by the LaunchDarkly integration
 
 ---
 
-## 15. Benefits of This Integration
+## 16. Benefits of This Integration
 
 1. **Reactive updates** - Changes in LaunchDarkly apply immediately without restarting
 2. **Composable** - `flag()` works anywhere a pattern is accepted
@@ -711,7 +797,7 @@ These are the custom methods and functions added by the LaunchDarkly integration
 
 ---
 
-## 16. Potential Additional Integrations
+## 17. Potential Additional Integrations
 
 The following Strudel features are **not yet integrated** with LaunchDarkly but represent opportunities for future development:
 
