@@ -1,16 +1,3 @@
-/*
-  @title Charli xcx - 360 (cover / remix) - MODIFIED
-  @by KAIXI (original), modified version
-  @details Brat  and it's  the same  but 
-           we're live coding so it's not
-
-  CHANGES FROM ORIGINAL:
-  - Removed flashy visual effects (theme, color, fontFamily, punchcard)
-  - Changed drum kit from RolandTR808 to RolandTR909
-  - Modified bass sound from gm_synth_bass_2 to gm_synth_bass_1
-  - Added some variation to hihat patterns
-*/
-
 let cpm = 120/4;
 
 register('acidenv', (x, pat) => pat.lpf(100)
@@ -106,7 +93,7 @@ let bass = getLeadArrangement('bassArrangement', 'original', bassVariations);
 
 let sub_bass = bass.transpose(-12);
 
-// CHANGED: drum kit from RolandTR808 to RolandTR909 (harder, more aggressive sound)
+// DRUMS 1: Original
 let bass_drum = arrange(
   [2, "<[bd -] [- - bd bd] [- bd] [-]>*4"],
   [1, "<[- bd] [bd - bd bd] [- bd] [-]>*4"],
@@ -114,14 +101,36 @@ let bass_drum = arrange(
 )
   .sound().bank("RolandTR909").gain(1.4);
 
-// CHANGED: using TR909 clap
 let clap = arrange(
   [4, "<[-] [cp] [-] [cp]>*4"]
 )
   .sound().bank("RolandTR909").gain(1.1);
 
 let drums = stack(bass_drum, clap);
- 
+
+
+// // DRUMS 2: Syncopated
+// let drums = stack(
+//   s("bd:1").beat("0,7?,10",16).duck("3:4:5"),
+//   s("sd:2").beat("4,12",16),
+//   s("hh:4!8")
+// )
+
+// // DRUMS 3: Four on the floor
+// let drums = stack(
+//   s("bd!4").bank("d70").gain(1.5).duck("3:4:5:6").duckdepth(.8).duckattack(.16),
+//   s("- sd - sd").bank("rolandtr909"),
+//   s("<hh hh hh oh hh hh hh oh>*8").bank("rolandtr909")
+// )
+
+// // DRUMS 4: Casio
+// let drums = stack(
+//   s("bd - bd -").bank("casiosk1"),
+//   s("bd hh bd hh").bank("casiovl1"),
+//   s("< - hh - hh - hh - hh >*8").bank("casiorz1")
+// )
+
+
 let section_2 = stack(lead_synth, bass, sub_bass, drums);
 
 // section 3: drop down, yeah

@@ -1,0 +1,24 @@
+let drum=arrange(
+  [
+    16, "[cr*8 , [~ bd  sd bd*2]]"
+  ],
+  [ 1/2 ,"[sd*3 <lt, mt*3> <lt, sd*2>]*2"],
+  
+)
+
+$: s(drum).lpf(1000,3000)._punchcard()
+
+
+//$: note("<[G2 <D3 G3>]*4 [E2 <B2 E3>]*4>").add("<2 4>").sound(" gm_electric_guitar_clean").room(1)._pianoroll()
+$: note("<[G2 <D3 G3>]*4 [E2 <B2 E3>]*4>").add("<2 4>")
+  .attack(0.01)       // Giữ Attack ngắn và Release/Sustain cố định
+  .sustain(0.8)
+  .release(0.1)
+  // Tham số DECAY sẽ là phần khác biệt
+  .decay("<0.2 3.0>")
+  .sound(" gm_electric_guitar_clean").room(1)._punchcard().gain(slider(1))
+  
+
+$: note("<[[0 <4 7>]*8]@4 [0 <4 7>]*4>")
+  .scale("<g:major a:minor>") .add("<4 -3>")
+  .sound(" gm_electric_guitar_clean wt_digital_basique")._punchcard().gain(slider(1))
