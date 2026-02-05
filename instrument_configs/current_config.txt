@@ -1,13 +1,10 @@
 let cpm = 120/4;
 
-register('acidenv', (x, pat) => pat.lpf(100)
-  .lpenv(x * 9).lps(.2).lpd(.12).lpq(2)
-)
 
 // UNCOMMENT FOR VOCALS
-samples({
-  vox: '360_vocals.wav'
-}, 'https://raw.githubusercontent.com/kai-xi/360/main/samples/');
+// samples({
+//   vox: '360_vocals.wav'
+// }, 'https://raw.githubusercontent.com/kai-xi/360/main/samples/');
 
 // ============================================================================
 // LEAD SYNTH VARIATIONS - Controlled via LaunchDarkly 'leadArrangement' flag
@@ -16,13 +13,13 @@ samples({
 const leadVariations = {
   // LEAD 1: ELECTRIC PIANO - warm jazz chords
   epiano: () => arrange(
-    [3, "<[[e3,b3,g3,e4] [- - [e3,b3,g3,e4] - - ]] [ - [f3,c4,a3,f4]]>*2"],
-    [1, "<[g3,d4,b3,g4] [a3,e4,c4,a4]>*2"]
+    [3, "<[[c3,e3,b3,g3,e4] [- - [c3,e3,b3,g3,e4] - - ]] [ - [c3,f3,c4,a3,f4]]>*2"],
+    [1, "<[d3,g3,d4,b3,g4] [e3,a3,e4,c4,a4]>*2"]
   ).note().sound("gm_epiano1").release(.4),
 
   // LEAD 2: ORGAN - wide octave spreads, cathedral sound
   organ: () => arrange(
-    [3, "<[e1,e2,e3,b3,g3,e4] [f1,f2,f3,c4,a2,f4]>*2"],
+    [3, "<[e1,e2,c3,b3,g3,e4] [f1,f2,c3,c4,a2,f4]>*2"],
     [1, "<[g1,g2,g3,d4,b3,g5] [a1,a2,a3,e4,c4,a4]>*2"]
   ).note().sound("pipeorgan_loud").release(.4),
 
@@ -44,8 +41,7 @@ const leadVariations = {
 
 // LEAD - dynamically selected via LaunchDarkly 'leadArrangement' flag
 // Falls back to 'original' if the flag is not set or invalid
-let lead_synth = getLeadArrangement('leadArrangement', 'original', leadVariations)
-  ._pianoroll();
+let lead_synth = getLeadArrangement('leadArrangement', 'original', leadVariations);
 
 let section_1 = lead_synth;
 
@@ -67,10 +63,10 @@ const bassVariations = {
 
   // BASS 2: TRANCE - Driving sawtooth with filter sweep
   trance: () => arrange(
-    [3, "<[- e2 e2 e2] [- e2 e2 e2] [- f2 f2 f2] [- f2 f2 f2]>*4"],
-    [1, "<[- g2 g2 g2] [- g2 g2 g2] [- a2 a2 a2] [- a2 a2 a2]>*4"],
+    [3, "<[- e2 e2 e2] [e2 e2 e2 e2] [f2 f2 f2 f2] [f2 f2 f2 f2]>*4"],
+    [1, "<[- g2 g2 g2] [g2 g2 g2 g2] [a2 a2 a2 a2] [a2 a2 a2 a2]>*4"],
   )
-    .note().sound("sawtooth").lpf("1000 2000 3000 4000"),
+    .note().sound("sawtooth").lpf("1000 2000 3000 4000").trans("<0 0 0 <0 [-6m -9]>>"),
 
   // BASS 3: TUBA - Deep brass sound with octave jumps
   tuba: () => arrange(
@@ -84,7 +80,7 @@ const bassVariations = {
     [3, "<[e2,e3] [f2,f3]>*2"],
     [1, "<[g2,g3] [a2,a3]>*2"],
   )
-    .note().sound("gm_synth_strings_2").attack(.05).sustain(.9).release(.1)
+    .note().sound("gm_synth_strings_2").attack(.05).sustain(.9).release(.1).trans("<0 0 0 <0 [-6m -9]>>")
 };
 
 // BASS - dynamically selected via LaunchDarkly 'bassArrangement' flag

@@ -13,6 +13,7 @@ export const initLaunchDarkly = async (clientId) => {
 
   const user = {
     key: 'strudel-user-' + Math.floor(Math.random() * 10000),
+    role: 'controller',
     anonymous: true,
   };
 
