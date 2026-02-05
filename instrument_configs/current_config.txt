@@ -13,6 +13,10 @@
 
 let cpm = 120/4;
 
+register('acidenv', (x, pat) => pat.lpf(100)
+  .lpenv(x * 9).lps(.2).lpd(.12).lpq(2)
+)
+
 // // UNCOMMENT FOR VOCALS
 // samples({
 //   vox: '360_vocals.wav'
@@ -53,12 +57,13 @@ const leadVariations = {
 
 // LEAD - dynamically selected via LaunchDarkly 'leadArrangement' flag
 // Falls back to 'original' if the flag is not set or invalid
-let lead_synth = getLeadArrangement('leadArrangement', 'original', leadVariations);
+let lead_synth = getLeadArrangement('leadArrangement', 'original', leadVariations)
+  ._pianoroll();
 
 let section_1 = lead_synth;
 
-// section 2: i went my own way and i made it
-// CHANGED: bass sound from gm_synth_bass_2 to gm_synth_bass_1 (punchier sound)
+
+// BASS 1: Original
 let bass = arrange(
   [2, "<[e2 -] [- - e2 f2] [- f1] [-]>*4"],
   [1, "<[- e2] [e2 - e2 f2] [- f1] [-]>*4"],
@@ -67,6 +72,29 @@ let bass = arrange(
   .note().sound("gm_synth_bass_1:0")
   .attack(0).decay(.5).release(.3)
   .lpf(2000);
+
+// // BASS 2: Trance
+// let bass = arrange(
+//   [3, "<[- e2 e2 e2] [- e2 e2 e2] [- f2 f2 f2] [- f2 f2 f2]>*4"],
+//   [1, "<[- g2 g2 g2] [- g2 g2 g2] [- a2 a2 a2] [- a2 a2 a2]>*4"],
+// )
+//   .note().sound("sawtooth").lpf("1000 2000 3000 4000")
+
+
+// // BASS 3: Tuba
+// let bass = arrange(
+//   [3, "<[e2 - b2 -] [f2 - c3 -]>*2"],
+//   [1, "<[g2 - d3 -] [a2 - e3 -]>*2"],
+// )
+//   .note().sound("gm_tuba").gain(2).release(.3)
+
+
+// // BASS 4: Strings
+// let bass = arrange(
+//  [3, "<[e2,e3] [f2,f3]>*2"],
+//  [1, "<[g2,g3] [a2,a3]>*2"],
+// )
+// .note().sound("gm_synth_strings_2").gain(2).attack(.05).sustain(.9).release(.1);
 
 let sub_bass = bass.transpose(-12);
 
