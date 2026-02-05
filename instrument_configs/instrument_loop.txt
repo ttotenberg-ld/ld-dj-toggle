@@ -136,11 +136,11 @@ const drumVariations = {
 
 // LEAD - dynamically selected via LaunchDarkly 'leadArrangement' flag
 let lead_synth = getLeadArrangement('leadArrangement', 'silence', leadVariations)
-  ._pianoroll();
+  ._punchcard().color("cyan");
 
 // BASS - dynamically selected via LaunchDarkly 'bassArrangement' flag
 let bass = getLeadArrangement('bassArrangement', 'silence', bassVariations)
-  ._pianoroll();
+  ._punchcard().color("magenta");
 
 // DRUMS - dynamically selected via LaunchDarkly 'drumArrangement' flag
 let drums = getLeadArrangement('drumArrangement', 'basicTick', drumVariations)
