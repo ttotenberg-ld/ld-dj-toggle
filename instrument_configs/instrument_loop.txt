@@ -1,0 +1,152 @@
+let cpm = 120/4;
+
+// ============================================================================
+// LEAD SYNTH VARIATIONS - Controlled via LaunchDarkly 'leadArrangement' flag
+// ============================================================================
+// Define all lead variations as a map of pattern factories
+const leadVariations = {
+  // LEAD 1: ELECTRIC PIANO - warm jazz chords
+  epiano: () => arrange(
+    [3, "<[[c3,e3,b3,g3,e4] [- [c3,e3,b3,g3,e4]]] [ - [c3,f3,c4,a3,f4]]>*2"],
+    [1, "<[d3,g3,d4,b3,g4] [e3,a3,e4,c4,a4]>*2"]
+  ).note().sound("gm_epiano1").release(.4),
+
+  // LEAD 2: ORGAN - wide octave spreads, cathedral sound
+  organ: () => arrange(
+    [3, "<[e1,e2,c3,b3,g3,e4] [f1,f2,c3,c4,a2,f4]>*2"],
+    [1, "<[g1,g2,g3,d4,b3,g5] [a1,a2,a3,e4,c4,a4]>*2"]
+  ).note().sound("pipeorgan_loud").release(.4),
+
+  // LEAD 3: TECHNO - aggressive supersaw arpeggios
+  techno: () => arrange(
+    [3, "<0 4 0 9 7>*16".scale("[e:minor f:major]")],
+    [1, "<0 4 0 9 7>*16".scale("[g:major a:minor]")]
+  ).note().sound("supersaw"),
+
+  
+
+  // LEAD 4: ORIGINAL - syncopated sawtooth with full effects chain
+  original: () => arrange(
+    [3, "<[[e3,b3] - c4 -] [e3 - f3 c4] [- c4 a4 -] [- - - -]>*4"],
+    [1, "<[- - [g3,b3] -] [g3 - a3 c4] [- c4 c5 -] [c4 - g4 -]>*4"]
+  ).note().sound("sawtooth")
+    .attack(0).decay(.25).sustain(0).release(.3)
+    .lpf(300).lpq(0).lpenv(3).lpa(0).lpd(.15).lps(0)
+    .delay(.2).delaytime(.25).delayfeedback(.1),
+
+  // LEAD 5: SILENCE - no sound
+  silence: () => arrange(),
+
+  // LEAD 6: BANJO - hell yeah brother
+  banjo: () => arrange(
+    [3, "<0 4 0 9 7>*16".scale("[e:minor f:major]")],
+    [1, "<0 4 0 9 7>*16".scale("[g:major a:minor]")]
+  ).note().sound("gm_banjo"),
+};
+
+
+
+
+// ============================================================================
+// BASS VARIATIONS - Controlled via LaunchDarkly 'bassArrangement' flag
+// ============================================================================
+// Define all bass variations as a map of pattern factories
+const bassVariations = {
+  // BASS 1: ORIGINAL - Standard GM synth bass with punchy envelope
+  original: () => arrange(
+    [2, "<[e2 -] [- - e2 f2] [- f1] [-]>*4"],
+    [1, "<[- e2] [e2 - e2 f2] [- f1] [-]>*4"],
+    [1, "<[g2 -] [g2 - g2 a2] [-] [-]>*4"],
+  )
+    .note().sound("gm_synth_bass_1:0")
+    .attack(0).decay(.5).release(.3)
+    .lpf(2000),
+
+  // BASS 2: TRANCE - Driving sawtooth with filter sweep
+  trance: () => arrange(
+    [3, "<[- e2 e2 e2] [e2 e2 e2 e2] [f2 f2 f2 f2] [f2 f2 f2 f2]>*4"],
+    [1, "<[- g2 g2 g2] [g2 g2 g2 g2] [a2 a2 a2 a2] [a2 a2 a2 a2]>*4"],
+  )
+    .note().sound("sawtooth").lpf("1000 2000 3000 4000").trans("<0 0 0 <0 [-6m -9]>>"),
+
+  // BASS 3: TUBA - Deep brass sound with octave jumps
+  tuba: () => arrange(
+    [3, "<[e2 - b2 -] [f2 - c3 -]>*2"],
+    [1, "<[g2 - d3 -] [a2 - e3 -]>*2"],
+  )
+    .note().sound("gm_tuba").release(.3).gain(2),
+
+  // BASS 4: STRINGS - Lush synth strings pad
+  strings: () => arrange(
+    [3, "<[e2,e3] [f2,f3]>*2"],
+    [1, "<[g2,g3] [a2,a3]>*2"],
+  )
+    .note().sound("gm_synth_strings_2").attack(.05).sustain(.9).release(.1).trans("<0 0 0 <0 [-6m -9]>>"),
+
+  // BASS 5: SILENCE - no sound
+  silence: () => arrange()
+};
+
+// ============================================================================
+// DRUM VARIATIONS - Controlled via LaunchDarkly 'drumArrangement' flag
+// ============================================================================
+// Keep bass_drum and clap as separate variables (used later in sections 5, 5_ext, 6, 7, 8)
+let bass_drum = arrange(
+  [2, "<[bd -] [- - bd bd] [- bd] [-]>*4"],
+  [1, "<[- bd] [bd - bd bd] [- bd] [-]>*4"],
+  [1, "<[bd -] [bd - bd bd] [-] [-]>*4"],
+)
+  .sound().bank("RolandTR909").gain(1.4);
+
+let clap = arrange(
+  [4, "<[-] [cp] [-] [cp]>*4"]
+)
+  .sound().bank("RolandTR909").gain(1.1);
+
+// Define all drum variations as a map of pattern factories
+const drumVariations = {
+  // DRUM 1: ORIGINAL - TR909 kick and clap combo
+  original: () => stack(bass_drum, clap),
+
+  // DRUM 2: SYNCOPATED - offbeat patterns with ducking
+  syncopated: () => stack(
+    s("bd:1").beat("0,7?,10",16).duck("3:4:5"),
+    s("sd:2").beat("4,12",16),
+    s("hh:4!8")
+  ),
+
+  // DRUM 3: FOUR ON THE FLOOR - classic dance floor kick
+  fourOnTheFloor: () => stack(
+    s("bd!4").bank("d70").gain(1.5).duck("3:4:5:6").duckdepth(.8).duckattack(.16),
+    s("- sd - sd").bank("rolandtr909"),
+    s("<hh hh hh oh hh hh hh oh>*8").bank("rolandtr909")
+  ),
+
+  // DRUM 4: CASIO - retro lo-fi sound
+  casio: () => stack(
+    s("bd - bd -").bank("casiosk1"),
+    s("bd hh bd hh").bank("casiovl1"),
+    s("< - hh - hh - hh - hh >*8").bank("casiorz1")
+  ),
+
+  basicTick: () => s("hh - hh -").bank("jd990")
+};
+
+
+
+// LEAD - dynamically selected via LaunchDarkly 'leadArrangement' flag
+let lead_synth = getLeadArrangement('leadArrangement', 'silence', leadVariations)
+  ._pianoroll();
+
+// BASS - dynamically selected via LaunchDarkly 'bassArrangement' flag
+let bass = getLeadArrangement('bassArrangement', 'silence', bassVariations)
+  ._pianoroll();
+
+// DRUMS - dynamically selected via LaunchDarkly 'drumArrangement' flag
+let drums = getLeadArrangement('drumArrangement', 'basicTick', drumVariations)
+  ._scope();
+
+let instruments = stack(lead_synth, bass, drums);
+
+instruments
+  .cpm(cpm);
