@@ -67,7 +67,7 @@ const bassVariations = {
     [3, "<[- e2 e2 e2] [e2 e2 e2 e2] [f2 f2 f2 f2] [f2 f2 f2 f2]>*4"],
     [1, "<[- g2 g2 g2] [g2 g2 g2 g2] [a2 a2 a2 a2] [a2 a2 a2 a2]>*4"],
   )
-    .note().sound("sawtooth").lpf("1000 2000 3000 4000").trans("<0 0 0 <0 [-6m -9]>>"),
+    .note().sound("sawtooth").lpf("<1000 2000 3000 4000 5000>").trans("<0 0 0 <0 [-6m -9]>>"),
 
   // BASS 3: TUBA - Deep brass sound with octave jumps
   tuba: () => arrange(
