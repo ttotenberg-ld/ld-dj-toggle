@@ -89,7 +89,7 @@ const bassVariations = {
     [3, "<[e2 - e3 - - - - e2] [f2 - f3 - d2 - d3 - ]>*2"],
     [1, "<[g2 - c3 d3 g3 - g2 -] [a2 - a3 - f3 e3 - d3]>*2"],
   )
-    .note().sound("gm_slap_bass_1"),
+    .note().sound("gm_slap_bass_1").gain(1.75),
 
   // BASS 5: SILENCE - no sound
   silence: () => arrange()
