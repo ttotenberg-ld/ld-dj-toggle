@@ -75,13 +75,13 @@ const bassVariations = {
     [1, "<[g2 - d3 -] [a2 - e3 -]>*2"],
   )
     .note().sound("gm_tuba").release(.3).gain(2),
-
-  // BASS 4: STRINGS - Lush synth strings pad
-  strings: () => arrange(
-    [3, "<[e2,e3] [f2,f3]>*2"],
-    [1, "<[g2,g3] [a2,a3]>*2"],
+  
+  // BASS 4: Slap
+  slap: () => arrange(
+    [3, "<[e2 - e3 - - - - e2] [f2 - f3 - d2 - d3 - ]>*2"],
+    [1, "<[g2 - c3 d3 g3 - g2 -] [a2 - a3 - f3 e3 - d3]>*2"],
   )
-    .note().sound("gm_synth_strings_2").attack(.05).sustain(.9).release(.1).trans("<0 0 0 <0 [-6m -9]>>"),
+    .note().sound("gm_slap_bass_1"),
 
   // BASS 5: SILENCE - no sound
   silence: () => arrange()
